@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import os
 from math import ceil
 from argparse import ArgumentParser
 from urllib.request import urlopen
@@ -15,6 +16,7 @@ TEMPLATE = "http://bandcamp.com/tag/{0}?sort_field=date"
 TEMPLATEP = "http://bandcamp.com/tag/{0}?sort_field=date&page={1}"
 TAGSPAGE = "http://bandcamp.com/tags"
 
+OUTPUTFILE = "C://Python34/Scripts/links_bcfree.txt"
 
 def get_page(url, times=7):
     try:
@@ -76,7 +78,11 @@ def get_free_p(links, processes):
         good = pool.map(get_page_free, links)
     return filter(lambda x: x!=None, good)
 
+def write_to_file(input) :
+    with open(OUTPUTFILE, 'w') as f:
+        f.write(input)
 
+        
 def main():
     parser = ArgumentParser(description='Get links for FREE bandcamp ALBUMS.',
                             epilog='to get list of all tags: %(prog)s taglist')
@@ -96,7 +102,9 @@ def main():
     links = set(links)
     print("\ngot {0} links \n".format(len(links))+'_'*len(links))
     p = get_free_p(links, options.processes)
-    print("\n"+"\n".join(p))
+    p_n = "\n"+"\n".join(p)
+    write_to_file(p_n)
+    os.startfile(OUTPUTFILE)
 
 
 if __name__ == "__main__":
